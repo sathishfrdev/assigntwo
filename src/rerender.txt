@@ -1,0 +1,106 @@
+import React, { useState,useEffect } from "react";
+import "./styles.css";
+import axios from 'axios';
+
+export default function App() {
+  const [value, setValues] = useState();
+  const [name, setName] = useState();
+  
+
+  //api url
+  const apiData= "https://api.instantwebtools.net/v1/passenger?page=0&size=10"
+
+  useEffect(()=>{
+    axios.get(apiData)
+    .then((response)=>{
+      console.log(response.data);
+    })
+    .then((data)=>{
+            setValues(data)
+        })
+},[])
+
+
+
+  //printing a user data function
+  const handleClick = (id) => {
+    setClick(!click);
+    setSearch(
+      `${details[id - 1].first_name + " " + details[id - 1].last_name}`
+    );
+    setName(
+      <table style={{ width: "350px" }}>
+        <th>ID</th>
+        <th>NAME</th>
+
+        <th>GENDER</th>
+        <th>EMAIL ADDRESS</th>
+
+        <tr>
+          <td>{details[id - 1].id}</td>
+          <td>
+            {details[id - 1].first_name + " " + details[id - 1].last_name}
+          </td>
+
+          <td>{details[id - 1].gender}</td>
+          <td>{details[id - 1].email}</td>
+        </tr>
+      </table>
+    );
+  };
+
+  function handleSelect() {
+    setClick(true);
+    loadData();
+  }
+  async function loadData() {
+    if (details.length < length) {
+      return;
+    }
+    setChoice(details.slice(0, length));
+    setLength(length + 5);
+  }
+  //handling scroll
+  const handlesScroll = (e) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) {
+      loadData();
+    }
+  };
+  return (
+    <div>
+      <div>
+        <input
+          type="text"
+          placeholder="Search..."
+          style={{ width: "350px", display: "block" }}
+          value={search}
+          onClick={handleSelect}
+        />
+
+        {click ? (
+          <select
+            size={4}
+            className="selection"
+            style={{ width: "350px", textAlign: "center" }}
+            onScroll={handlesScroll}
+          >
+            {choice.map((data) => {
+              return (
+                <option onClick={() => handleClick(data.id)}>
+                  {`Username${data.id}`}
+                </option>
+              );
+            })}
+          </select>
+        ) : (
+          ""
+        )}
+      </div>
+
+      <br />
+      <div>{name}</div>
+    </div>
+  );
+}
